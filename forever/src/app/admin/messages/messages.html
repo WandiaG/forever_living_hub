@@ -1,0 +1,106 @@
+<body>
+  <div
+    class="relative flex h-auto min-h-screen w-full flex-col bg-gray-100 group/design-root overflow-x-hidden"
+    style="font-family: Inter, 'Noto Sans', sans-serif"
+  >
+    <div class="px-4 py-3">
+      <label class="flex flex-col min-w-40 h-12 w-full">
+        <div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-white shadow">
+          <div
+            class="text-gray-500 flex border-none bg-gray-200 items-center justify-center pl-4 rounded-l-lg border-r-0"
+            data-icon="MagnifyingGlass"
+            data-size="24px"
+            data-weight="regular"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24px"
+              height="24px"
+              fill="currentColor"
+              viewBox="0 0 256 256"
+            >
+              <path
+                d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
+              ></path>
+            </svg>
+          </div>
+          <input
+            placeholder="Search messages by sender or email..."
+            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#141811] focus:outline-0 focus:ring-0 border-none bg-white focus:border-none h-full placeholder:text-gray-500 px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="getMessages()"
+          />
+        </div>
+      </label>
+    </div>
+
+    <div class="flex gap-3 px-4 pb-3 pt-2">
+      <button
+        (click)="applyFilter('all')"
+        [ngClass]="{
+          'bg-blue-500 text-white': filterStatus === 'all',
+          'bg-white text-[#141811]': filterStatus !== 'all'
+        }"
+        class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg pl-4 pr-4 shadow transition-colors duration-200"
+      >
+        <p class="text-sm font-medium leading-normal">All</p>
+      </button>
+      <button
+        (click)="applyFilter('pending')"
+        [ngClass]="{
+          'bg-yellow-500 text-white': filterStatus === 'pending',
+          'bg-white text-[#141811]': filterStatus !== 'pending'
+        }"
+        class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg pl-4 pr-4 shadow transition-colors duration-200"
+      >
+        <p class="text-sm font-medium leading-normal">Pending</p>
+      </button>
+      <button
+        (click)="applyFilter('replied')"
+        [ngClass]="{
+          'bg-green-500 text-white': filterStatus === 'replied',
+          'bg-white text-[#141811]': filterStatus !== 'replied'
+        }"
+        class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg pl-4 pr-4 shadow transition-colors duration-200"
+      >
+        <p class="text-sm font-medium leading-normal">Replied</p>
+      </button>
+    </div>
+
+    <div class="p-4 grid grid-cols-1 gap-4">
+      <div
+        *ngFor="let item of messageList; trackBy: trackByMessageId"
+        (click)="viewMessage(item.id)"
+        class="bg-white rounded-lg shadow-md p-4 flex items-center gap-4 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+      >
+        <div class="flex flex-col justify-center flex-1">
+          <p class="text-[#141811] text-base font-medium leading-normal line-clamp-1">
+            Sender: {{ item.sender }}
+          </p>
+          <p class="text-[#758961] text-sm font-normal leading-normal line-clamp-2">
+            Subject: {{ item.subject }}
+          </p>
+        </div>
+        <div class="shrink-0">
+          <button
+            [ngClass]="{
+              'bg-green-100 text-green-700 border-green-700': item.is_replied === 1,
+              'bg-yellow-100 text-yellow-700 border-yellow-700': item.is_replied === 0
+            }"
+            class="text-sm font-medium leading-normal px-2 py-1 rounded-md border"
+          >
+            {{ item.is_replied === 1 ? 'Replied' : 'Pending' }}
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="messageList.length === 0" class="text-center p-8 text-gray-500">
+        No messages found.
+      </div>
+    </div>
+
+    <div>
+      <div class="h-5 bg-gray-100"></div>
+    </div>
+  </div>
+</body>

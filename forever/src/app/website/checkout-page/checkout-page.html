@@ -1,0 +1,181 @@
+<div
+  class="relative flex h-auto min-h-screen min-w-8 max-w-md mx-auto flex-col items-center bg-gradient-to-br from-[#fafcf8] to-[#f5f8f0] justify-between group/design-root overflow-x-hidden"
+  style='font-family: Inter, "Noto Sans", sans-serif;'
+>
+  <div class="w-full">
+    <!-- Header -->
+    <div class="flex items-center bg-white/80 backdrop-blur-sm p-4 pb-3 justify-between sticky top-0 z-10 shadow-sm">
+      <div 
+        class="text-[#141b0d] flex size-12 shrink-0 items-center cursor-pointer hover:bg-[#edf3e7] rounded-full transition-colors p-2" 
+        data-icon="ArrowLeft" 
+        data-size="24px" 
+        data-weight="regular"
+        (click)="goBack()"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path>
+        </svg>
+      </div>
+      <h2 class="text-[#141b0d] text-xl font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Checkout</h2>
+    </div>
+
+    <!-- Customer Information Form -->
+    <div class="mx-4 mt-6 mb-6 bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div class="bg-gradient-to-r from-[#edf3e7] to-[#e5f0db] p-4 border-b border-[#dae7ce]">
+        <h3 class="text-[#141b0d] text-lg font-bold flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/>
+          </svg>
+          Customer Information
+        </h3>
+        <p class="text-[#739a4c] text-sm font-medium mt-1">Please fill in your details for delivery</p>
+      </div>
+      
+      <form class="p-6 space-y-5">
+        <div class="space-y-2">
+          <label class="text-[#141b0d] text-sm font-semibold">Full Name *</label>
+          <input
+            name="customer_name"
+            [ngModel]="customerInfo().customer_name"
+            (ngModelChange)="updateCustomerInfo('customer_name', $event)"
+            placeholder="Enter your full name"
+            class="w-full h-12 px-4 rounded-xl border-2 border-[#edf3e7] bg-[#fafcf8] text-[#141b0d] placeholder:text-[#739a4c] focus:border-[#80ec13] focus:outline-none transition-colors text-base font-medium"
+            required
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-[#141b0d] text-sm font-semibold">Phone Number *</label>
+          <input
+            name="phone_number"
+            [ngModel]="customerInfo().phone_number"
+            (ngModelChange)="updateCustomerInfo('phone_number', $event)"
+            placeholder="Enter your phone number"
+            type="tel"
+            class="w-full h-12 px-4 rounded-xl border-2 border-[#edf3e7] bg-[#fafcf8] text-[#141b0d] placeholder:text-[#739a4c] focus:border-[#80ec13] focus:outline-none transition-colors text-base font-medium"
+            required
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-[#141b0d] text-sm font-semibold">County *</label>
+            <input
+              name="county"
+              [ngModel]="customerInfo().county"
+              (ngModelChange)="updateCustomerInfo('county', $event)"
+              placeholder="County"
+              class="w-full h-12 px-4 rounded-xl border-2 border-[#edf3e7] bg-[#fafcf8] text-[#141b0d] placeholder:text-[#739a4c] focus:border-[#80ec13] focus:outline-none transition-colors text-base font-medium"
+              required
+            />
+          </div>
+          
+          <div class="space-y-2">
+            <label class="text-[#141b0d] text-sm font-semibold">Location *</label>
+            <input
+              name="location"
+              [ngModel]="customerInfo().location"
+              (ngModelChange)="updateCustomerInfo('location', $event)"
+              placeholder="Specific location"
+              class="w-full h-12 px-4 rounded-xl border-2 border-[#edf3e7] bg-[#fafcf8] text-[#141b0d] placeholder:text-[#739a4c] focus:border-[#80ec13] focus:outline-none transition-colors text-base font-medium"
+              required
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="mx-4 mb-6 bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div class="bg-gradient-to-r from-[#edf3e7] to-[#e5f0db] p-4 border-b border-[#dae7ce]">
+        <h3 class="text-[#141b0d] text-lg font-bold flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M222.14,58.87A8,8,0,0,0,216,56H54.68L49.79,29.14A16,16,0,0,0,34.05,16H16a8,8,0,0,0,0,16h18L59.56,172.29a24,24,0,0,0,5.33,11.27,28,28,0,1,0,44.4,8.44h45.42A27.75,27.75,0,0,0,152,204a28,28,0,1,0,28-28H83.17a8,8,0,0,1-7.87-6.57L72.13,152h116a24,24,0,0,0,23.61-19.71l12.16-66.86A8,8,0,0,0,222.14,58.87ZM96,204a12,12,0,1,1-12-12A12,12,0,0,1,96,204Zm96,0a12,12,0,1,1-12-12A12,12,0,0,1,192,204Zm4-74.57A8,8,0,0,1,188.1,136H69.22L57.59,72H206.41Z"/>
+          </svg>
+          Order Summary
+        </h3>
+        <p class="text-[#739a4c] text-sm font-medium mt-1">{{ cartSignal().items.length }} item{{ cartSignal().items.length !== 1 ? 's' : '' }} in your cart</p>
+      </div>
+
+      <!-- Empty Cart State -->
+      <div *ngIf="cartSignal().items.length === 0" class="p-8 text-center">
+        <div class="w-16 h-16 bg-[#edf3e7] rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" fill="#739a4c" viewBox="0 0 256 256">
+            <path d="M222.14,58.87A8,8,0,0,0,216,56H54.68L49.79,29.14A16,16,0,0,0,34.05,16H16a8,8,0,0,0,0,16h18L59.56,172.29a24,24,0,0,0,5.33,11.27,28,28,0,1,0,44.4,8.44h45.42A27.75,27.75,0,0,0,152,204a28,28,0,1,0,28-28H83.17a8,8,0,0,1-7.87-6.57L72.13,152h116a24,24,0,0,0,23.61-19.71l12.16-66.86A8,8,0,0,0,222.14,58.87ZM96,204a12,12,0,1,1-12-12A12,12,0,0,1,96,204Zm96,0a12,12,0,1,1-12-12A12,12,0,0,1,192,204Zm4-74.57A8,8,0,0,1,188.1,136H69.22L57.59,72H206.41Z"/>
+          </svg>
+        </div>
+        <p class="text-[#739a4c] text-lg font-medium mb-4">Your cart is empty</p>
+        <button 
+          class="bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141b0d] font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+          routerLink="/products"
+        >
+          Continue Shopping
+        </button>
+      </div>
+
+      <!-- Cart Items -->
+      <div *ngIf="cartSignal().items.length > 0" class="divide-y divide-[#f0f4ec]">
+        <div *ngFor="let item of cartSignal().items" class="flex items-center gap-4 p-4">
+          <div class="w-12 h-12 bg-[#edf3e7] rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="#739a4c" viewBox="0 0 256 256">
+              <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V88H40V56Zm0,144H40V104H216v96Z"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="text-[#141b0d] font-semibold text-base leading-tight mb-1 truncate">{{ item.name }}</h4>
+            <p class="text-[#739a4c] text-sm font-medium">Qty: {{ item.quantity }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[#141b0d] font-bold text-lg">Ksh {{ (item.price * item.quantity).toFixed(2) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Total and Place Order Button -->
+  <div class="w-full sticky bottom-0" *ngIf="cartSignal().items.length > 0">
+    <div class="bg-white/95 backdrop-blur-sm shadow-lg border-t border-[#edf3e7]">
+      <!-- Pricing Summary -->
+      <div class="px-6 pt-4 pb-2 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-[#739a4c] font-medium">Subtotal</span>
+          <span class="text-[#141b0d] font-semibold">Ksh {{ subtotal().toFixed(2) }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-[#739a4c] font-medium">Shipping</span>
+          <span class="text-[#141b0d] font-semibold">Ksh {{ cartSignal().shipping_cost.toFixed(2) }}</span>
+        </div>
+        <div class="border-t-2 border-[#80ec13] pt-3">
+          <div class="flex justify-between items-center">
+            <span class="text-[#141b0d] text-lg font-bold">Total</span>
+            <span class="text-[#80ec13] text-2xl font-bold">Ksh {{ totalPrice().toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Place Order Button -->
+      <div class="px-6 pb-6 pt-2">
+        <button
+          class="w-full h-14 rounded-xl font-bold text-lg transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
+          [class]="isSubmitting() ? 'bg-[#739a4c] text-white cursor-not-allowed' : 'bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141b0d] hover:from-[#70dc03] hover:to-[#60cc00]'"
+          [disabled]="isSubmitting() || !isFormValid()"
+          (click)="placeOrder()"
+        >
+          <svg *ngIf="!isSubmitting()" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/>
+          </svg>
+          
+          <div *ngIf="isSubmitting()" class="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+          
+          <span *ngIf="!isSubmitting()">Place Order</span>
+          <span *ngIf="isSubmitting()">Processing...</span>
+        </button>
+        
+        <p class="text-center text-[#739a4c] text-xs mt-3 font-medium">
+          By placing this order, you agree to our terms and conditions
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

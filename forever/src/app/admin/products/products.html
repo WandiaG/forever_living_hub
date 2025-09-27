@@ -1,0 +1,169 @@
+<html lang="en">
+  <body>
+    <div
+      class="relative flex h-auto min-h-screen min-w-9 mx-auto flex-col bg-white justify-between group/design-root overflow-x-hidden"
+      style="font-family: Inter, 'Noto Sans', sans-serif"
+    >
+      <div>
+        <div class="flex items-center bg-white p-4 pb-2 justify-between">
+          <div class="flex w-12 items-center justify-end"></div>
+        </div>
+
+        <div class="px-4 py-3">
+          <label class="flex flex-col min-w-40 h-12 w-full">
+            <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+              <div
+                class="text-[#758961] flex border-none bg-[#f2f4f0] items-center justify-center pl-4 rounded-l-lg border-r-0"
+                data-icon="MagnifyingGlass"
+                data-size="24px"
+                data-weight="regular"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24px"
+                  height="24px"
+                  fill="green-500"
+                  viewBox="0 0 256 256"
+                >
+                  <path
+                    d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
+                  ></path>
+                </svg>
+              </div>
+              <input
+                [(ngModel)]="searchTerm"
+                (input)="onSearch()"
+                placeholder="Search products"
+                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#141811] focus:outline-0 focus:ring-0 border-none bg-[#f2f4f0] focus:border-none h-full placeholder:text-[#758961] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
+              />
+              <button
+                (click)="onCreateNew()"
+                class="flex max-w-[480px] cursor-pointer items-center bg-[#c28421] justify-center overflow-hidden rounded-lg h-12 text-[#141811] gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 px-4 hover:bg-[#a67019] transition-colors"
+              >
+                <div class="text-[#141811]" data-icon="Plus" data-size="24px" data-weight="regular">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24px"
+                    height="24px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path
+                      d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"
+                    ></path>
+                  </svg>
+                </div>
+                <span>Add</span>
+              </button>
+            </div>
+          </label>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="text-center py-8">
+          <div class="text-[#758961]">Loading products...</div>
+        </div>
+
+        <!-- No Products State -->
+        <div *ngIf="!isLoading && (!allProducts || allProducts.length === 0)" class="text-center py-8">
+          <div class="text-[#758961]">No products found</div>
+          <button 
+            (click)="onCreateNew()"
+            class="mt-4 bg-[#c28421] text-[#141811] px-6 py-2 rounded-lg font-bold hover:bg-[#a67019] transition-colors"
+          >
+            Create First Product
+          </button>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-2 gap-4 px-4 py-4" *ngIf="!isLoading && allProducts && allProducts.length > 0">
+          <div *ngFor="let item of filteredProducts; trackBy: trackByProductId; let i = index" class="flex flex-col rounded-lg border border-[#e0e6db] p-3 shadow-sm hover:shadow-md transition-shadow">
+            <!-- Product Image -->
+            <div class="mb-3 h-32 w-full overflow-hidden rounded-md cursor-pointer" (click)="onViewDetails(item.id)">
+              <img
+                alt="Product image for {{item.name}}"
+                loading="lazy"
+                class="h-full w-full object-cover hover:scale-105 transition-transform"
+                [style.background-image]="'url(' + item.imageUrl + ')'"
+                (error)="onImageError($event)"
+              />
+            </div>
+            
+            <!-- Product Info -->
+            <div class="flex flex-col flex-grow">
+              <p class="text-[#141811] text-base font-medium leading-normal line-clamp-1" [title]="item.name">
+                {{item.name}}
+              </p>
+              <p class="text-[#758961] text-sm font-normal leading-normal">${{item.price}}</p>
+              <p *ngIf="item.description" class="text-[#758961] text-xs leading-normal mt-1 line-clamp-2">
+                {{item.description}}
+              </p>
+            </div>
+            
+            <!-- Actions -->
+            <div class="mt-auto flex justify-between items-center pt-3">
+              <!-- View Details Button -->
+              <button
+                (click)="onViewDetails(item.id)"
+                class="text-[#758961] hover:text-[#141811] transition-colors"
+                title="View Details"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"></path>
+                </svg>
+              </button>
+
+              <div class="flex gap-2">
+                <!-- Edit Button -->
+                <button
+                  (click)="onEdit(item.id)"
+                  class="text-[#141811] hover:text-[#c28421] transition-colors p-1 rounded hover:bg-[#f2f4f0]"
+                  title="Edit Product"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path
+                      d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"
+                    ></path>
+                  </svg>
+                </button>
+
+                <!-- Delete Button -->
+                <button
+                  (click)="onDelete(item.id, item.name)"
+                  class="text-red-500 hover:text-red-700 transition-colors p-1 rounded hover:bg-red-50"
+                  title="Delete Product"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty Search Results -->
+        <div *ngIf="!isLoading && searchTerm && filteredProducts.length === 0" class="text-center py-8">
+          <div class="text-[#758961]">No products found matching "{{searchTerm}}"</div>
+          <button 
+            (click)="clearSearch()"
+            class="mt-2 text-[#c28421] hover:text-[#a67019] underline"
+          >
+            Clear search
+          </button>
+        </div>
+      </div>
+      
+      <div>
+        <div class="flex justify-end overflow-hidden px-5 pb-5"></div>
+        <div class="h-5 bg-white"></div>
+      </div>
+    </div>
+  </body>
+</html>

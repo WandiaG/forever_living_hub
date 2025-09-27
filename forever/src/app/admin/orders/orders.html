@@ -1,0 +1,255 @@
+<div
+  class="relative flex h-auto min-h-screen w-full max-w-md mx-auto flex-col bg-gradient-to-br from-[#fafcf8] to-[#f5f8f0] justify-between group/design-root overflow-x-hidden"
+  style='font-family: Inter, "Noto Sans", sans-serif;'
+>
+  <div>
+    <!-- Header -->
+    <div class="bg-white/80 backdrop-blur-sm p-4 pb-3 shadow-sm sticky top-0 z-10">
+      <h1 class="text-[#141811] text-2xl font-bold leading-tight tracking-[-0.015em] text-center mb-4">
+        Order Management
+      </h1>
+      
+      <!-- Search Bar -->
+      <div class="relative">
+        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#758961]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+          </svg>
+        </div>
+        <input
+          placeholder="Search orders..."
+          class="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-[#edf3e7] bg-white text-[#141811] placeholder:text-[#758961] focus:border-[#80ec13] focus:outline-none transition-all duration-200 text-base font-medium shadow-sm"
+          type="text"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="px-4 py-4 bg-white/50 backdrop-blur-sm">
+      <!-- Status Filters -->
+      <div class="mb-4">
+        <h3 class="text-[#141811] text-sm font-semibold mb-3 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm40-68a28,28,0,1,1-28-28A28,28,0,0,1,168,148Z"/>
+          </svg>
+          Order Status
+        </h3>
+        <div class="flex gap-2 flex-wrap">
+          <button 
+            (click)="setStatusFilter('All')"
+            [ngClass]="selectedStatus() === 'All' ? 'bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141811] shadow-md' : 'bg-white border-2 border-[#edf3e7] text-[#758961] hover:border-[#80ec13]'"
+            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+          >
+            All Orders
+          </button>
+          <button 
+            (click)="setStatusFilter('Processing')"
+            [ngClass]="selectedStatus() === 'Processing' ? 'bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141811] shadow-md' : 'bg-white border-2 border-[#edf3e7] text-[#758961] hover:border-[#80ec13]'"
+            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+          >
+            Processing
+          </button>
+          <button 
+            (click)="setStatusFilter('Shipped')"
+            [ngClass]="selectedStatus() === 'Shipped' ? 'bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141811] shadow-md' : 'bg-white border-2 border-[#edf3e7] text-[#758961] hover:border-[#80ec13]'"
+            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+          >
+            Shipped
+          </button>
+          <button 
+            (click)="setStatusFilter('Delivered')"
+            [ngClass]="selectedStatus() === 'Delivered' ? 'bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141811] shadow-md' : 'bg-white border-2 border-[#edf3e7] text-[#758961] hover:border-[#80ec13]'"
+            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+          >
+            Delivered
+          </button>
+          <button 
+            (click)="setStatusFilter('Cancelled')"
+            [ngClass]="selectedStatus() === 'Cancelled' ? 'bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141811] shadow-md' : 'bg-white border-2 border-[#edf3e7] text-[#758961] hover:border-[#80ec13]'"
+            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+          >
+            Cancelled
+          </button>
+        </div>
+      </div>
+
+      <!-- Date Filters -->
+      <div>
+        <h3 class="text-[#141811] text-sm font-semibold mb-3 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Z"/>
+          </svg>
+          Time Range
+        </h3>
+        <div class="flex gap-2 flex-wrap">
+          <button 
+            (click)="setDateFilter('all')"
+            [ngClass]="selectedDateRange() === 'all' ? 'bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141811] shadow-md' : 'bg-white border-2 border-[#edf3e7] text-[#758961] hover:border-[#80ec13]'"
+            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+          >
+            All Time
+          </button>
+          <button 
+            (click)="setDateFilter('today')"
+            [ngClass]="selectedDateRange() === 'today' ? 'bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141811] shadow-md' : 'bg-white border-2 border-[#edf3e7] text-[#758961] hover:border-[#80ec13]'"
+            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+          >
+            Today
+          </button>
+          <button 
+            (click)="setDateFilter('last7')"
+            [ngClass]="selectedDateRange() === 'last7' ? 'bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141811] shadow-md' : 'bg-white border-2 border-[#edf3e7] text-[#758961] hover:border-[#80ec13]'"
+            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+          >
+            7 Days
+          </button>
+          <button 
+            (click)="setDateFilter('last30')"
+            [ngClass]="selectedDateRange() === 'last30' ? 'bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141811] shadow-md' : 'bg-white border-2 border-[#edf3e7] text-[#758961] hover:border-[#80ec13]'"
+            class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
+          >
+            30 Days
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading()" class="flex flex-col items-center justify-center py-20 px-4">
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#edf3e7] border-t-[#80ec13] mb-4"></div>
+      <p class="text-[#758961] font-medium">Loading orders...</p>
+    </div>
+
+    <!-- No Orders Found State -->
+    <div *ngIf="!isLoading() && filteredOrders().length === 0" class="flex flex-col items-center justify-center py-20 px-6">
+      <div class="w-20 h-20 bg-[#edf3e7] rounded-full flex items-center justify-center mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" fill="#758961" viewBox="0 0 256 256">
+          <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/>
+        </svg>
+      </div>
+      <h3 class="text-[#141811] text-xl font-bold mb-2">No orders found</h3>
+      <p class="text-[#758961] text-center mb-6 max-w-sm">
+        No orders match your current filters. Try adjusting your search criteria or date range.
+      </p>
+      <button 
+        (click)="setStatusFilter('All'); setDateFilter('all'); searchQuery.set('')"
+        class="bg-gradient-to-r from-[#80ec13] to-[#70dc03] text-[#141811] font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+      >
+        Clear All Filters
+      </button>
+    </div>
+
+    <!-- Orders List -->
+    <div *ngIf="!isLoading() && filteredOrders().length > 0" class="px-4 pb-6 space-y-3">
+      <div 
+        *ngFor="let order of filteredOrders(); let i = index"
+        (click)="goToOrderDetails(order.id)"
+        class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer transform hover:scale-[1.02] overflow-hidden border border-[#f0f4ec]"
+      >
+        <!-- Order Header -->
+        <div class="bg-gradient-to-r from-[#edf3e7] to-[#e5f0db] p-4 border-b border-[#dae7ce]">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-[#80ec13] rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="white" viewBox="0 0 256 256">
+                  <path d="M222.14,58.87A8,8,0,0,0,216,56H54.68L49.79,29.14A16,16,0,0,0,34.05,16H16a8,8,0,0,0,0,16h18L59.56,172.29a24,24,0,0,0,5.33,11.27,28,28,0,1,0,44.4,8.44h45.42A27.75,27.75,0,0,0,152,204a28,28,0,1,0,28-28H83.17a8,8,0,0,1-7.87-6.57L72.13,152h116a24,24,0,0,0,23.61-19.71l12.16-66.86A8,8,0,0,0,222.14,58.87ZM96,204a12,12,0,1,1-12-12A12,12,0,0,1,96,204Zm96,0a12,12,0,1,1-12-12A12,12,0,0,1,192,204Zm4-74.57A8,8,0,0,1,188.1,136H69.22L57.59,72H206.41Z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-[#141811] font-bold text-lg">Order #{{ order.id }}</h3>
+                <p class="text-[#758961] text-sm font-medium">{{ order.customer_name }}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-[#80ec13] text-xl font-bold">Ksh {{ (order.total_price || 0).toFixed(2) }}</p>
+              <span 
+                class="inline-block px-3 py-1 rounded-full text-xs font-semibold mt-1"
+                [ngClass]="{
+                  'bg-yellow-100 text-yellow-800': order.status === 'Processing',
+                  'bg-blue-100 text-blue-800': order.status === 'Shipped',
+                  'bg-green-100 text-green-800': order.status === 'Delivered',
+                  'bg-red-100 text-red-800': order.status === 'Cancelled',
+                  'bg-gray-100 text-gray-800': !order.status
+                }"
+              >
+                {{ order.status || 'Unknown' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Details -->
+        <div class="p-4">
+          <div class="flex items-center justify-between text-sm">
+            <div class="flex items-center gap-2 text-[#758961]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Z"/>
+              </svg>
+              <span>{{ order.created_at ? (order.created_at | date:'medium') : 'Date not available' }}</span>
+            </div>
+            <div class="flex items-center gap-1 text-[#80ec13]">
+              <span class="text-sm font-medium">View Details</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bottom Navigation -->
+  <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm shadow-lg border-t border-[#edf3e7]">
+    <div class="flex justify-between gap-1 px-4 pb-4 pt-3">
+      <a 
+        routerLink="/landing_page" 
+        class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl py-3 text-[#141b0d] hover:bg-[#edf3e7] transition-all duration-200 cursor-pointer"
+      >
+        <div class="text-current flex h-6 items-center justify-center" data-icon="House" data-size="24px" data-weight="fill">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.11l80,75.48A16,16,0,0,1,224,115.55Z"></path>
+          </svg>
+        </div>
+        <p class="text-current text-xs font-semibold leading-normal">Home</p>
+      </a>
+      
+      <a 
+        routerLink="/products" 
+        class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl py-3 text-[#739a4c] hover:bg-[#edf3e7] transition-all duration-200 cursor-pointer"
+      >
+        <div class="text-current flex h-6 items-center justify-center" data-icon="MagnifyingGlass" data-size="24px" data-weight="regular">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+          </svg>
+        </div>
+        <p class="text-current text-xs font-semibold leading-normal">Shop</p>
+      </a>
+      
+      <a 
+        routerLink="/cart" 
+        class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl py-3 text-[#739a4c] hover:bg-[#edf3e7] transition-all duration-200 cursor-pointer"
+      >
+        <div class="text-current flex h-6 items-center justify-center" data-icon="ShoppingCart" data-size="24px" data-weight="regular">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M222.14,58.87A8,8,0,0,0,216,56H54.68L49.79,29.14A16,16,0,0,0,34.05,16H16a8,8,0,0,0,0,16h18L59.56,172.29a24,24,0,0,0,5.33,11.27,28,28,0,1,0,44.4,8.44h45.42A27.75,27.75,0,0,0,152,204a28,28,0,1,0,28-28H83.17a8,8,0,0,1-7.87-6.57L72.13,152h116a24,24,0,0,0,23.61-19.71l12.16-66.86A8,8,0,0,0,222.14,58.87ZM96,204a12,12,0,1,1-12-12A12,12,0,0,1,96,204Zm96,0a12,12,0,1,1-12-12A12,12,0,0,1,192,204Zm4-74.57A8,8,0,0,1,188.1,136H69.22L57.59,72H206.41Z"/>
+          </svg>
+        </div>
+        <p class="text-current text-xs font-semibold leading-normal">Cart</p>
+      </a>
+      
+      <a 
+        class="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl py-3 text-[#80ec13] bg-[#edf3e7]"
+      >
+        <div class="text-current flex h-6 items-center justify-center" data-icon="User" data-size="24px" data-weight="regular">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/>
+          </svg>
+        </div>
+        <p class="text-current text-xs font-semibold leading-normal">Orders</p>
+      </a>
+    </div>
+  </div>
+</div>

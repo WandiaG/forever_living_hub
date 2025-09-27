@@ -1,0 +1,170 @@
+<div
+  class="relative flex h-auto min-h-screen min-w-8 max-w-md mx-auto flex-col bg-[#fafcf8] justify-between group/design-root overflow-x-hidden"
+  style='font-family: Inter, "Noto Sans", sans-serif;'
+>
+  <div class="">
+    <!-- Header -->
+    <div class="flex items-center bg-[#fafcf8] p-4 pb-2 min-w-fit">
+      <div 
+        class="text-[#141b0d] flex size-12 shrink-0 items-center cursor-pointer" 
+        data-icon="ArrowLeft" 
+        data-size="24px" 
+        data-weight="regular"
+        (click)="goBackToProducts()"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path>
+        </svg>
+      </div>
+      <h2 class="text-[#141b0d] text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">
+        Cart ({{ totalItemCount }})
+      </h2>
+    </div>
+
+    <!-- Empty Cart Message -->
+    <div *ngIf="isCartEmpty" class="flex flex-col items-center justify-center py-16 px-4">
+      <div class="text-[#739a4c] mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M222.14,58.87A8,8,0,0,0,216,56H54.68L49.79,29.14A16,16,0,0,0,34.05,16H16a8,8,0,0,0,0,16h18L59.56,172.29a24,24,0,0,0,5.33,11.27,28,28,0,1,0,44.4,8.44h45.42A27.75,27.75,0,0,0,152,204a28,28,0,1,0,28-28H83.17a8,8,0,0,1-7.87-6.57L72.13,152h116a24,24,0,0,0,23.61-19.71l12.16-66.86A8,8,0,0,0,222.14,58.87Z"/>
+        </svg>
+      </div>
+      <h3 class="text-[#141b0d] text-lg font-bold mb-2">Your cart is empty</h3>
+      <p class="text-[#739a4c] text-sm text-center mb-4">Add some products to get started</p>
+      <button 
+        (click)="goToShop()"
+        class="bg-[#80ec13] text-[#141b0d] px-6 py-3 rounded-lg font-medium hover:bg-[#70dc03] transition-colors"
+      >
+        Start Shopping
+      </button>
+    </div>
+
+    <!-- Cart Items -->
+    <div *ngIf="!isCartEmpty">
+      <!-- Cart Item List -->
+      <div *ngFor="let item of cart.items; trackBy: trackByProductId" class="flex items-center gap-4 bg-[#fafcf8] px-4 min-h-[72px] py-2 justify-between border-b border-[#edf3e7] last:border-b-0">
+        <div class="flex items-center w-full gap-4">
+          <div
+            class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-14 flex-shrink-0"
+            [style.background-image]="'url(' + item.imageUrl + ')'"
+          >
+            <img 
+              [src]="item.imageUrl" 
+              [alt]="item.name"
+              (error)="onImageError($event)"
+              class="w-full h-full object-cover rounded-lg opacity-0"
+            />
+          </div>
+          <div class="flex flex-col justify-center flex-1">
+            <p class="text-[#141b0d] text-base font-medium leading-normal line-clamp-1">{{ item.name }}</p>
+            <p class="text-[#739a4c] text-sm font-normal leading-normal line-clamp-2">{{ formatPrice(item.price) }}</p>
+          </div>
+        </div>
+        <div class="shrink-0">
+          <div class="flex items-center gap-2 text-[#141b0d]">
+            <button 
+              (click)="decreaseQuantity(item)"
+              class="text-base font-medium leading-normal flex h-7 w-7 items-center justify-center rounded-full bg-[#edf3e7] cursor-pointer hover:bg-[#d4e8c4] transition-colors"
+              [disabled]="item.quantity <= 0"
+            >
+              -
+            </button>
+            <input
+              class="text-base font-medium leading-normal w-12 p-0 text-center bg-transparent focus:outline-0 focus:ring-0 focus:border-none border-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              type="number"
+              [value]="item.quantity"
+              (blur)="onQuantityChange(item, $event)"
+              (keyup.enter)="onQuantityChange(item, $event)"
+              min="0"
+            />
+            <button 
+              (click)="increaseQuantity(item)"
+              class="text-base font-medium leading-normal flex h-7 w-7 items-center justify-center rounded-full bg-[#edf3e7] cursor-pointer hover:bg-[#d4e8c4] transition-colors"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <h3 class="text-[#141b0d] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Order Summary</h3>
+      <div class="p-4">
+        <div class="flex justify-between gap-x-6 py-2">
+          <p class="text-[#739a4c] text-sm font-normal leading-normal">Subtotal</p>
+          <p class="text-[#141b0d] text-sm font-normal leading-normal text-right">{{ formatPrice(cart.subtotal) }}</p>
+        </div>
+        <div class="flex justify-between gap-x-6 py-2">
+          <p class="text-[#739a4c] text-sm font-normal leading-normal">Shipping</p>
+          <p class="text-[#141b0d] text-sm font-normal leading-normal text-right">{{ formatPrice(cart.shipping_cost) }}</p>
+        </div>
+        <div class="flex justify-between gap-x-6 py-2 border-t border-[#edf3e7] pt-2">
+          <p class="text-[#141b0d] text-base font-bold leading-normal">Total</p>
+          <p class="text-[#141b0d] text-base font-bold leading-normal text-right">{{ formatPrice(cart.total_price) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Section -->
+  <div>
+    <!-- Checkout Button -->
+    <div class="flex px-4 py-3" *ngIf="!isCartEmpty">
+      <button
+        (click)="proceedToCheckout()"
+        class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 flex-1 bg-[#80ec13] text-[#141b0d] text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#70dc03] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="isCartEmpty"
+      >
+        <span class="truncate">Proceed to Checkout</span>
+      </button>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="flex gap-2 border-t border-[#edf3e7] bg-[#fafcf8] px-4 pb-3 pt-2">
+      <a 
+        (click)="goToHome()" 
+        class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#739a4c] cursor-pointer hover:text-[#5a7a3a] transition-colors"
+      >
+        <div class="text-current flex h-8 items-center justify-center" data-icon="House" data-size="24px" data-weight="regular">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V115.55l.11-.1L128,40l79.9,75.43.11.10Z"></path>
+          </svg>
+        </div>
+        <p class="text-current text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+      </a>
+      <a 
+        (click)="goToShop()" 
+        class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#739a4c] cursor-pointer hover:text-[#5a7a3a] transition-colors"
+      >
+        <div class="text-current flex h-8 items-center justify-center" data-icon="MagnifyingGlass" data-size="24px" data-weight="regular">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+          </svg>
+        </div>
+        <p class="text-current text-xs font-medium leading-normal tracking-[0.015em]">Shop</p>
+      </a>
+      <a 
+        (click)="goToCart()" 
+        class="just flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-[#141b0d]"
+      >
+        <div class="text-[#141b0d] flex h-8 items-center justify-center" data-icon="ShoppingCart" data-size="24px" data-weight="fill">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M222.14,58.87A8,8,0,0,0,216,56H54.68L49.79,29.14A16,16,0,0,0,34.05,16H16a8,8,0,0,0,0,16h18L59.56,172.29a24,24,0,0,0,5.33,11.27,28,28,0,1,0,44.4,8.44h45.42A27.75,27.75,0,0,0,152,204a28,28,0,1,0,28-28H83.17a8,8,0,0,1-7.87-6.57L72.13,152h116a24,24,0,0,0,23.61-19.71l12.16-66.86A8,8,0,0,0,222.14,58.87ZM180,192a12,12,0,1,1-12,12A12,12,0,0,1,180,192Zm-96,0a12,12,0,1,1-12,12A12,12,0,0,1,84,192Z"></path>
+          </svg>
+        </div>
+        <p class="text-[#141b0d] text-xs font-medium leading-normal tracking-[0.015em]">Cart</p>
+      </a>
+      <a 
+        (click)="goToProfile()" 
+        class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#739a4c] cursor-pointer hover:text-[#5a7a3a] transition-colors"
+      >
+        <div class="text-current flex h-8 items-center justify-center" data-icon="User" data-size="24px" data-weight="regular">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path>
+          </svg>
+        </div>
+        <p class="text-current text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+      </a>
+    </div>
+    <div class="h-5 bg-[#fafcf8]"></div>
+  </div>
+</div>
